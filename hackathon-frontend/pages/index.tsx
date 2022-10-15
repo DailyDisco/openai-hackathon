@@ -1,9 +1,26 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+interface NextPage {
+  prompt: string;
+  setPrompt: any;
+  onSubmit: any;
+  isLoading: boolean;
+  characterLimit: number;
+  props: any;
+}
+
 const Home: NextPage = () => {
+
+   // here is where you can change the front end suggested prompt limit
+  //  const isPromptValid = props.prompt.length < props.characterLimit;
+  //  const updatePromptValue = (text: string) => {
+  //      if (text.length <= props.characterLimit) {
+  //          props.setPrompt(text);
+  //      }
+  //  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -14,56 +31,48 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to our Project!
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
+        <h2>OpenAI Whisper Hackathon</h2>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+        <div className="line"></div>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div className="audio-container">
+          <div className="audio-upload-container">
+            <label htmlFor="audio-upload">Upload Audio File</label>
+            <input type="audio" name="audio-upload" id="audio-upload" />
+          </div>
+          <div className="live-recording">
+            <button id="recording">Record Live!</button>
+          </div>
+        </div>
+        
+        {/* Three sections */}
+        <div id="output-boxes" className={styles.grid}>
+          <div className="text-output">
+            <h3>Text Output</h3>
+            <p id="key-text"></p>
+            <div className="large-box"></div>
+          </div>
+          <div className="code-output">
+            <h3>Code Output</h3>
+            <p id="key-code"></p>
+            <div className="large-box"></div>
+          </div>
+          <div className="code-conversion">
+            <h3>Code Conversion</h3>
+            <p id="code-converted"></p>
+            <div className="large-box"></div>
+          </div>
+        </div>
+        <div>
+          {/* disable the button if the prompt is over the limit */}
+          <button className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'>Submit</button>
         </div>
       </main>
 
       <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
       </footer>
     </div>
   )

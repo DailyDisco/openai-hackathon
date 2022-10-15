@@ -8,6 +8,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    line-height: 1.6rem;
 }
 
 a {
@@ -18,6 +19,75 @@ a {
 * {
   box-sizing: border-box;
 }
+
+main {
+  width: 100%;
+  margin: 0 auto;
+
+}
+
+main div {
+  max-width: 100% !important;
+  /* margin-top: 60px; */
+  padding: 0;
+}
+
+#output-boxes {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.large-box {
+  width: 300px;
+  height: 500px;
+  margin: 10px;
+  border: 2px solid white;
+  border-radius: 20px;
+}
+
+.line {
+  background-color: #fff;
+  height: 1px;
+  width: 70%;
+  box-shadow: 0 0 10px 0 #fff;
+}
+
+.audio-container {
+  display: flex;
+  margin-top: 40px;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 67%;
+}
+
+.audio-upload-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.live-recording {
+  /* margin-left: 40px; */
+}
+
+button#recording {
+  background-color: #efefef;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+button#recording:active {
+  transform: scale(0.98);
+}
+
+
+.audio-container * {
+  /* border: 1px dashed cyan; */
+}
+
+
 
 @media (prefers-color-scheme: dark) {
   html {
