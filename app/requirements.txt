@@ -15,4 +15,5 @@ python-dotenv
 fastapi
 mangum
 uvicorn
+flask
 pydub
