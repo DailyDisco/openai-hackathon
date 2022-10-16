@@ -64,8 +64,12 @@ main div {
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
+}
+
+#audio-upload {
+  font-size: .6rem;
 }
 
 .live-recording {

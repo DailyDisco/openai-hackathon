@@ -28,4 +28,5 @@ def validate_input_length(prompt: str):
             status_code=400,
             detail=f"Input must be less than {MAX_INPUT_LENGTH} characters.",
         )
-
+        
+#uvicorn codex_api:app --reload

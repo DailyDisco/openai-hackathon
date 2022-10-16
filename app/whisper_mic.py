@@ -1,11 +1,12 @@
 import io
-from pydub import AudioSegment
-import speech_recognition as sr
-import whisper
-import tempfile
 import os
-import click
+import tempfile
 
+import click
+import speech_recognition as sr
+from pydub import AudioSegment
+
+import whisper
 
 temp_dir = tempfile.mkdtemp()
 save_path = os.path.join(temp_dir, "temp.wav")
@@ -50,4 +51,5 @@ def main(model, english,verbose, energy, pause,dynamic_energy):
             else:
                 print(result)
                 
-main()
+if __name__ == "__main__":
+    main()

@@ -18,7 +18,7 @@ def main ():
     args = parser.parse_args()
     user_input = args.input
     
-    print(f"working")
+    print(f"User input: {user_input}")
     if validate_length(user_input):
         generate_codex_snippet(user_input)
         
@@ -38,20 +38,33 @@ def validate_length(prompt: str) -> bool:
 
 def generate_codex_snippet(prompt: str) -> str:
     enriched_prompt = f"Transform this Python script into JavaScript:\n ### Python\n {prompt}: \n### JavaScript"
+    print(enriched_prompt) # for debugging
     response = openai.Completion.create(
         model="code-davinci-002",
-        prompt=enriched_prompt,
+        prompt= enriched_prompt,
         temperature=0,
-        max_tokens=256,
+        max_tokens=128,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0,
         stop=["###"]
     )
-
+    
+    # Extract Output Text from Response for the Branding Snippet
     second_language_text: str = response["choices"][0]["text"]
-
-    print(f"{second_language_text}")
+    
+    # # remove the leading whitespace
+    # second_language_text = second_language_text.strip()
+    
+    # # check if the last character is a full stop
+    # last_char = second_language_text[-1]
+    
+    # # add ... if last character is a full stop
+    # if last_char not in {".", "!", "?"}:
+    #     second_language_text += "..."
+    
+    print(f"Snippet: {second_language_text}")
+    return second_language_text
 
 if __name__ == "__main__":
     main()
