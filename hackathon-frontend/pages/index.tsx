@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import React, { useState } from 'react';
+import { resourceLimits } from 'worker_threads';
 
 interface OpenAI {
   prompt: string;
@@ -16,7 +17,7 @@ const Home: React.FC<OpenAI> = (props) => {
   const CHARACTER_LIMIT: number = 128;
   
   const ENDPOINT: string =
-    'http://127.0.0.1:8000/codex_snippet';
+    'http://127.0.0.1:5001/whisper';
 
   const [prompt, setPrompt] = React.useState('');
   const [snippet, setSnippet] = React.useState('');
@@ -24,13 +25,21 @@ const Home: React.FC<OpenAI> = (props) => {
   const [hasResult, setHasResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = () => {
-    console.log('submitting: ' + prompt);
+  const onSubmit = async () => {
+    console.log('submitting: ');
     // callApi();
     setIsLoading(true);
-    fetch(`${ENDPOINT}?prompt=${prompt}`)
-      .then((res) => res.json())
-      .then(onResult);
+    const url = `${ENDPOINT}`
+    const reqOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    }
+    const res = await fetch(url, reqOptions)
+      .then(response => console.log(response))
+    // const res = await fetch(`${ENDPOINT}`) //?prompt=${prompt}
+    //   .then((res) => res.json())
+    //   .then(onResult);
+      console.log(res)
   };
 
   // this takes the json data when the user clicks the button and sets the state
@@ -82,19 +91,22 @@ const Home: React.FC<OpenAI> = (props) => {
 
         <div className="audio-container">
           <div className="audio-upload-container">
-            <label htmlFor="audio-upload">Upload Audio File</label>
-            <input type="file" name="audio-upload" id="audio-upload" accept="audio/*"/>
-            <br className='mt-2'></br>
-            <div>
+            <form onSubmit={onSubmit} name="recording" encType="multipart/form-data">
+              <label htmlFor="audio-upload">Upload Audio File</label>
+              <input type="file" name="audio-upload" id="audio-upload" accept="audio/*"/>
+              <br className='mt-2'></br>
+              <div>
               {/* disable the button if the prompt is over the limit */}
-              <button
-                className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
-                onClick={props.onSubmit}
-                // disabled={props.isLoading || !isPromptValid}
+              {/* <button
+              className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
+              onClick={props.onSubmit}
+              // disabled={props.isLoading || !isPromptValid}
               >
-                Submit
-              </button>
-            </div>
+              Submit
+              </button> */}
+              <input type="submit" value="Submit" />
+              </div>
+            </form>
           </div>
           <div className="live-recording">
           <button
