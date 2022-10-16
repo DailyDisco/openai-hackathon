@@ -48,8 +48,14 @@ def main(model, english,verbose, energy, pause,dynamic_energy):
             if not verbose:
                 predicted_text = result["text"]
                 print("You said: " + predicted_text)
+                return predicted_text
             else:
                 print(result)
+                return predicted_text
+            
+def whisperResults(result):
+    main.predicted_text = result
+    return result
                 
 if __name__ == "__main__":
     main()
