@@ -47,7 +47,8 @@ def handler():
         # Let's get the summary of the soundfile
         summary = gpt3.gpt3complete(text)
         
-        secondSummary = codex.codexComplete(summary.strip())
+        # Let's make a summary of the first summary
+        secondSummary = codex.codexComplete(summary)
         # Now we can store the result object for this file.
         results.append({
             'filename': filename,

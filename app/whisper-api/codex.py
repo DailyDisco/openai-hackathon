@@ -12,10 +12,11 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def codexComplete(summary):
-    enriched_prompt = f"Transform this Python script into JavaScript:\n ### Python\n {summary}: \n### JavaScript"
+    # enriched_prompt = f"Transform this Python script into JavaScript:\n ### Python\n {summary}: \n### JavaScript"
     Platformresponse = openai.Completion.create(
         model="code-davinci-002",
-        prompt="Write a funny summary of this text: {}".format(summary),
+        prompt = f"Transform this Python script into JavaScript:\n ### Python\n {summary}: \n### JavaScript".format(summary),
+        # prompt="Write a console log of this: {}".format(summary),
         temperature=0,
         max_tokens=128,
         top_p=1,
