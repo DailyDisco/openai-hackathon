@@ -6,6 +6,9 @@ import gpt3
 import openai
 import os
 import codex
+from dotenv import load_dotenv
+
+load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
