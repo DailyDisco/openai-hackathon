@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
-interface NextPage {
+interface OpenAI {
   prompt: string;
   setPrompt: any;
   onSubmit: any;
@@ -11,7 +11,7 @@ interface NextPage {
   props: any;
 }
 
-const Home: NextPage = () => {
+const Home: React.FC<OpenAI> = (props) => {
 
    // here is where you can change the front end suggested prompt limit
   //  const isPromptValid = props.prompt.length < props.characterLimit;
@@ -52,18 +52,26 @@ const Home: NextPage = () => {
         <div id="output-boxes" className={styles.grid}>
           <div className="text-output">
             <h3>Text Output</h3>
-            <p id="key-text"></p>
-            <div className="large-box"></div>
+            <div className="large-box">
+              <p id="key-text"></p>
+            </div>
           </div>
           <div className="code-output">
             <h3>Code Output</h3>
-            <p id="key-code"></p>
-            <div className="large-box"></div>
+            <div className="large-box">
+              <p id="key-code"></p>
+            </div>
           </div>
           <div className="code-conversion">
             <h3>Code Conversion</h3>
-            <p id="code-converted"></p>
-            <div className="large-box"></div>
+            <select name="language-selector" id="language-selector">
+              <option value="javascript">JavaScript</option>
+              <option value="ruby">Ruby</option>
+              <option value="go">Go</option>
+            </select>
+            <div className="large-box">
+              <p id="code-converted">`{}`</p>
+            </div>
           </div>
         </div>
         <div>

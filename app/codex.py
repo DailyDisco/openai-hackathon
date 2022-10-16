@@ -12,15 +12,20 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def main ():
+    parser = argparse.ArgumentParser() # default library no need to install
+    parser.add_argument("--input", "-i", type=str, required=True)
+    #throws an error if you don't provide an input
+    args = parser.parse_args()
+    user_input = args.input
+    
     print(f"working")
-    # parser = argparse.ArgumentParser() # default library no need to install
-    # parser.add_argument("--input", "-i", type=str, required=True)
-    # #throws an error if you don't provide an input
-    # args = parser.parse_args()
-    # user_input = args.input
+    if validate_length(user_input):
+        generate_codex_snippet(user_input)
+        
+    else:
+        raise ValueError(f"Input must be less than {MAX_INPUT_LENGTH} characters. Submitted user input is: {user_input}")
     
     # print(f"User input: {user_input}")
-    # if validate_length(user_input):
     #      generate_gpt_snippet(user_input)
     #     #  generate_keywords(user_input)
 
@@ -30,17 +35,23 @@ def main ():
 def validate_length(prompt: str) -> bool:
     return len(prompt) <= MAX_INPUT_LENGTH
 
-def generate_codex_snippet(prompt: str) -> str:
 
+def generate_codex_snippet(prompt: str) -> str:
+    enriched_prompt = f"Transform this Python script into JavaScript:\n ### Python\n {prompt}: \n### JavaScript"
     response = openai.Completion.create(
         model="code-davinci-002",
-        prompt="# Create a Python dictionary of 6 countries and their capitals\ncountries =",
+        prompt=enriched_prompt,
         temperature=0,
         max_tokens=256,
         top_p=1,
         frequency_penalty=0,
-        presence_penalty=0
+        presence_penalty=0,
+        stop=["###"]
     )
+
+    second_language_text: str = response["choices"][0]["text"]
+
+    print(f"{second_language_text}")
 
 if __name__ == "__main__":
     main()

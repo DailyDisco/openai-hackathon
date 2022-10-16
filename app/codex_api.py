@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from gpt import generate_gpt_snippet #, generate_keywords
+from codex import generate_codex_snippet #, generate_keywords
 from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,11 +15,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# @app.get('/generate_snippet')
-# async def generate_snippet_api(prompt: str):
-#     validate_input_length(prompt)
-#     snippet = generate_gpt_snippet(prompt)
-#     return {"snippet": snippet, "keywords": []}
+@app.get('/codex_snippet')
+async def generate_codex_api(prompt: str):
+    validate_input_length(prompt)
+    snippet = generate_codex_snippet(prompt)
+    return {"snippet": snippet, "keywords": []}
 
 # validates the length of the prompt and throws an error if it's too long
 def validate_input_length(prompt: str):
@@ -28,3 +28,4 @@ def validate_input_length(prompt: str):
             status_code=400,
             detail=f"Input must be less than {MAX_INPUT_LENGTH} characters.",
         )
+
