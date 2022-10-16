@@ -1,6 +1,6 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
+import Head from 'next/head'
+import Image from 'next/image'
+import styles from '../styles/Home.module.css'
 import React, { useState } from 'react';
 
 interface OpenAI {
@@ -14,11 +14,8 @@ interface OpenAI {
 
 const Home: React.FC<OpenAI> = (props) => {
   const CHARACTER_LIMIT: number = 128;
-
-  // const ENDPOINT: string =
-  //   'https://kj3y0mxhv5.execute-api.us-east-1.amazonaws.com/prod/generate_snippet';
-
-    const ENDPOINT: string =
+  
+  const ENDPOINT: string =
     'http://127.0.0.1:8000/codex_snippet';
 
   const [prompt, setPrompt] = React.useState('');
@@ -83,10 +80,10 @@ const Home: React.FC<OpenAI> = (props) => {
 
         <div className='line'></div>
 
-        <div className='audio-container'>
-          <div className='audio-upload-container'>
-            <label htmlFor='audio-upload'>Upload Audio File</label>
-            <input type='audio' name='audio-upload' id='audio-upload' />
+        <div className="audio-container">
+          <div className="audio-upload-container">
+            <label htmlFor="audio-upload">Upload Audio File</label>
+            <input type="file" name="audio-upload" id="audio-upload" accept="audio/*"/>
             <br className='mt-2'></br>
             <div>
               {/* disable the button if the prompt is over the limit */}
@@ -99,13 +96,12 @@ const Home: React.FC<OpenAI> = (props) => {
               </button>
             </div>
           </div>
-          <div className='live-recording'>
-            <button
+          <div className="live-recording">
+          <button
               className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
               onClick={props.onSubmit}
               // disabled={props.isLoading || !isPromptValid}
-            >
-              Record Live!
+              >Record Live!
             </button>
           </div>
         </div>
@@ -114,18 +110,27 @@ const Home: React.FC<OpenAI> = (props) => {
         <div id='output-boxes' className={styles.grid}>
           <div className='text-output'>
             <h3>Text Output</h3>
-            <p id='key-text'></p>
-            <div className='large-box'></div>
+            <div className="large-box">
+              <p id="key-text"></p>
+            </div>
           </div>
           <div className='code-output'>
             <h3>Code Output</h3>
-            <p id='key-code'></p>
-            <div className='large-box'></div>
+            <div className="large-box">
+              <p id="key-code"></p>
+            </div>
           </div>
           <div className='code-conversion'>
             <h3>Code Conversion</h3>
-            <p id='code-converted'></p>
-            <div className='large-box'></div>
+            
+            <select name="language-selector" id="language-selector">
+              <option value="javascript">JavaScript</option>
+              <option value="ruby">Ruby</option>
+              <option value="go">Go</option>
+            </select>
+            <div className="large-box">
+              <p id="code-converted">`{}`</p>
+            </div>
           </div>
         </div>
       </main>

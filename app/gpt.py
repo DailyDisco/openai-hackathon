@@ -61,7 +61,7 @@ def generate_gpt_snippet(prompt: str) -> str:
     # Load your api key from an environment variable or secret management service
     openai.api_key = os.getenv("OPENAI_API_KEY")
     enriched_prompt = f"Transform the following idea described into a python script: {prompt}: "
-    print(enriched_prompt) # for debugging
+    # print(enriched_prompt) # for debugging
     response = openai.Completion.create(
         engine = "davinci-instruct-beta-v3", prompt = enriched_prompt, max_tokens=256, temperature=0.7, top_p=1, frequency_penalty=0, presence_penalty=0
     )
