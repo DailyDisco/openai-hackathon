@@ -7,6 +7,20 @@ import openai
 import os
 import codex
 from dotenv import load_dotenv
+# from mangum import Mangum
+from flask_cors import CORS
+
+app = Flask(__name__)
+# handler = Mangum(app) # this wraps the api app in a handler function
+CORS(app, supports_credentials=True)
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 load_dotenv()
 

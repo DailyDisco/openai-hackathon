@@ -1,7 +1,7 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import React, { useState } from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import React, { useState, useEffect } from 'react';
 
 interface OpenAI {
   prompt: string;
@@ -14,9 +14,8 @@ interface OpenAI {
 
 const Home: React.FC<OpenAI> = (props) => {
   const CHARACTER_LIMIT: number = 128;
-  
-  const ENDPOINT: string =
-    'http://127.0.0.1:8000/codex_snippet';
+
+  const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
 
   const [prompt, setPrompt] = React.useState('');
   const [snippet, setSnippet] = React.useState('');
@@ -24,11 +23,11 @@ const Home: React.FC<OpenAI> = (props) => {
   const [hasResult, setHasResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log('submitting: ' + prompt);
     // callApi();
     setIsLoading(true);
-    fetch(`${ENDPOINT}?prompt=${prompt}`)
+    fetch(`${ENDPOINT}`)
       .then((res) => res.json())
       .then(onResult);
   };
@@ -58,12 +57,31 @@ const Home: React.FC<OpenAI> = (props) => {
     }
   };
 
-  let statusColor = 'text-slate-500';
-  let statusText = null;
-  // if (!isPromptValid) {
-  //   statusColor = 'text-red-400';
-  //   statusText = `Input must be less than ${props.characterLimit} characters.`;
-  // }
+  // // usestate for setting a javascript
+  // // object for storing and using data
+  // const [data, setdata] = useState({
+  //   filename: '',
+  //   transcript: '',
+  //   summary: '',
+  //   secondSummary: '',
+  // });
+
+  // // Using useEffect for single rendering
+  // useEffect(() => {
+  //   // Using fetch to fetch the api from
+  //   // flask server it will be redirected to proxy
+  //   fetch('/data').then((res) =>
+  //     res.json().then((data) => {
+  //       // Setting a data from api
+  //       setdata({
+  //         filename: data.Filename,
+  //         transcript: data.Transcript,
+  //         summary: data.Summary,
+  //         secondSummary: data.SecondSummary,
+  //       });
+  //     })
+  //   );
+  // }, []);
 
   return (
     <div className={styles.container}>
@@ -80,62 +98,69 @@ const Home: React.FC<OpenAI> = (props) => {
 
         <div className='line'></div>
 
-        <div className="audio-container">
-          <div className="audio-upload-container">
-            <label htmlFor="audio-upload">Upload Audio File</label>
-            <input type="file" name="audio-upload" id="audio-upload" accept="audio/*"/>
-            <br className='mt-2'></br>
-            <div>
-              {/* disable the button if the prompt is over the limit */}
-              <button
-                className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
-                onClick={props.onSubmit}
-                // disabled={props.isLoading || !isPromptValid}
-              >
-                Submit
-              </button>
-            </div>
+        <div className='audio-container'>
+          <div className='audio-upload-container'>
+            <form
+              action='http://127.0.0.1:5000/whisper'
+              method='post'
+              encType='multipart/form-data'
+              // onSubmit={onSubmit}
+            >
+              <label htmlFor='audio-upload'>Upload Audio File</label>
+              <input
+                type='file'
+                name='audio-upload'
+                id='audio-upload'
+                accept='audio/*'
+              />
+              <br className='mt-2'></br>
+              <div>
+                <input type='submit' value='Submit' />
+              </div>
+            </form>
           </div>
-          <div className="live-recording">
+          {/* <div className="live-recording">
           <button
               className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
               onClick={props.onSubmit}
               // disabled={props.isLoading || !isPromptValid}
               >Record Live!
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Three sections */}
         <div id='output-boxes' className={styles.grid}>
           <div className='text-output'>
             <h3>Text Output</h3>
-            <div className="large-box">
-              <p id="key-text"></p>
+            <div className='large-box'>
+              {/* <p>{data.filename}</p>
+              <p>{data.transcript}</p>
+              <p>{data.summary}</p>
+              <p>{data.secondSummary}</p> */}
+              <p id='key-text'></p>
             </div>
           </div>
           <div className='code-output'>
             <h3>Code Output</h3>
-            <div className="large-box">
-              <p id="key-code"></p>
+            <div className='large-box'>
+              <p id='key-code'></p>
             </div>
           </div>
           <div className='code-conversion'>
             <h3>Code Conversion</h3>
-            
-            <select name="language-selector" id="language-selector">
-              <option value="javascript">JavaScript</option>
-              <option value="ruby">Ruby</option>
-              <option value="go">Go</option>
+
+            <select name='language-selector' id='language-selector'>
+              <option value='javascript'>JavaScript</option>
+              <option value='ruby'>Ruby</option>
+              <option value='go'>Go</option>
             </select>
-            <div className="large-box">
-              <p id="code-converted">`{}`</p>
+            <div className='large-box'>
+              <p id='code-converted'>`{}`</p>
             </div>
           </div>
         </div>
       </main>
-
-      <footer className={styles.footer}></footer>
     </div>
   );
 };
