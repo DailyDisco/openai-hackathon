@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Codex = ({  }) => {
+const Codex = ({}) => {
   return (
     <div className='code-conversion'>
       <h3>Code Conversion</h3>

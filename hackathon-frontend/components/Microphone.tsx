@@ -1,4 +1,4 @@
-const Microphone = ({ }) => {
+const Microphone = ({}) => {
   return (
     <div className='live-recording'>
       <button
