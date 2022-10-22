@@ -1,6 +1,7 @@
 import React from 'react';
+import Microphone from './Microphone';
 
-const Form = () => {
+const Form = ({ onSubmit }) => {
   return (
     <div className='audio-container'>
       <div className='audio-upload-container'>
@@ -10,7 +11,8 @@ const Form = () => {
           encType='multipart/form-data'
           onSubmit={onSubmit}
         >
-          <label htmlFor='audio-upload'>Upload Audio File</label>
+          <label htmlFor='audio-upload'>Upload Audio File </label>
+          <br></br>
           <input
             type='file'
             name='audio-upload'
@@ -23,6 +25,7 @@ const Form = () => {
           </div>
         </form>
       </div>
+      {/* <Microphone onSubmit={onSubmit} /> */}
     </div>
   );
 };

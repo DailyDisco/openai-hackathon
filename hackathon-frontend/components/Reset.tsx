@@ -1,16 +1,16 @@
-import React from 'react'
+import React from 'react';
 
-const Reset = () => {
+const Reset = ({  }) => {
 
-  const onReset = () => {
-    setPrompt(''); // reset the prompt
-    setHasResult(false);
-    setIsLoading(false);
-  };
-  
   return (
-    <div>Reset</div>
-  )
-}
+    <button
+      className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
+      // onClick={onReset}
+      // disabled={props.isLoading || !isPromptValid}
+    >
+      Record Live!
+    </button>
+  );
+};
 
-export default Reset
+export default Reset;

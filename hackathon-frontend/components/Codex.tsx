@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Codex = () => {
+const Codex = ({  }) => {
   return (
     <div className='code-conversion'>
       <h3>Code Conversion</h3>
@@ -11,7 +11,8 @@ const Codex = () => {
         <option value='go'>Go</option>
       </select>
       <div className='large-box'>
-        <p id='code-converted'>`{}`</p>
+        {/* <p>{secondSummary}</p> */}
+        <p id='code-converted'>{}</p>
       </div>
     </div>
   );
