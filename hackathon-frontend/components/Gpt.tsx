@@ -1,9 +1,14 @@
-import React from 'react'
+import React from 'react';
 
 const Gpt = () => {
   return (
-    <div>Gpt</div>
-  )
-}
+    <div className='code-output'>
+      <h3>Code Output</h3>
+      <div className='large-box'>
+        <p id='key-code'></p>
+      </div>
+    </div>
+  );
+};
 
-export default Gpt
+export default Gpt;

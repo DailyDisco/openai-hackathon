@@ -2,6 +2,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import React, { useState, useEffect } from 'react';
+import Whisper from '../components/Whisper';
+import Gpt from '../components/Gpt';
+import Codex from '../components/Codex';
 
 interface OpenAI {
   prompt: string;
@@ -18,10 +21,15 @@ const Home: React.FC<OpenAI> = (props) => {
   const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
 
   const [prompt, setPrompt] = React.useState('');
-  const [snippet, setSnippet] = React.useState('');
 
+  const [snippet, setSnippet] = React.useState('');
   const [hasResult, setHasResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [filename, setFilename] = useState('');
+  const [transcript, setTranscript] = useState('');
+  const [summary, setSummary] = useState('');
+  const [secondSummary, setSecondSummary] = useState('');
 
   const onSubmit = async () => {
     console.log('submitting: ' + prompt);
@@ -35,15 +43,13 @@ const Home: React.FC<OpenAI> = (props) => {
   // this takes the json data when the user clicks the button and sets the state
   // gives you the snippet and keywords as variables you can use
   const onResult = (data: any) => {
+    setFilename(data.filename);
+    setTranscript(data.transcript);
+    setSummary(data.summary);
+    setSecondSummary(data.secondSummary);
     setSnippet(data.snippet);
     // setKeywords(data.keywords);
     setHasResult(true);
-    setIsLoading(false);
-  };
-
-  const onReset = () => {
-    setPrompt(''); // reset the prompt
-    setHasResult(false);
     setIsLoading(false);
   };
 
@@ -104,7 +110,7 @@ const Home: React.FC<OpenAI> = (props) => {
               action='http://127.0.0.1:5000/whisper'
               method='post'
               encType='multipart/form-data'
-              // onSubmit={onSubmit}
+              onSubmit={onSubmit}
             >
               <label htmlFor='audio-upload'>Upload Audio File</label>
               <input
@@ -119,46 +125,13 @@ const Home: React.FC<OpenAI> = (props) => {
               </div>
             </form>
           </div>
-          {/* <div className="live-recording">
-          <button
-              className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
-              onClick={props.onSubmit}
-              // disabled={props.isLoading || !isPromptValid}
-              >Record Live!
-            </button>
-          </div> */}
         </div>
 
         {/* Three sections */}
         <div id='output-boxes' className={styles.grid}>
-          <div className='text-output'>
-            <h3>Text Output</h3>
-            <div className='large-box'>
-              {/* <p>{data.filename}</p>
-              <p>{data.transcript}</p>
-              <p>{data.summary}</p>
-              <p>{data.secondSummary}</p> */}
-              <p id='key-text'></p>
-            </div>
-          </div>
-          <div className='code-output'>
-            <h3>Code Output</h3>
-            <div className='large-box'>
-              <p id='key-code'></p>
-            </div>
-          </div>
-          <div className='code-conversion'>
-            <h3>Code Conversion</h3>
-
-            <select name='language-selector' id='language-selector'>
-              <option value='javascript'>JavaScript</option>
-              <option value='ruby'>Ruby</option>
-              <option value='go'>Go</option>
-            </select>
-            <div className='large-box'>
-              <p id='code-converted'>`{}`</p>
-            </div>
-          </div>
+          <Whisper />
+          <Gpt />
+          <Codex />
         </div>
       </main>
     </div>
