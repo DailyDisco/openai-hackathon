@@ -8,7 +8,7 @@ import Microphone from '../components/Microphone';
 import Form from '../components/Form';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
-import axios from 'axios';
+import Reset from '../components/Reset';
 
 interface OpenAI {
   onSubmit: any;
@@ -23,41 +23,30 @@ interface OpenAI {
   action: any;
   formData: any;
   setFilename: any;
-  // ENDPOINT: string;
-  // props: any;
-  // audiofile: any;
+  setSummary: any;
   res: any;
+  arr: any;
+  // ENDPOINT: string;
 }
 
-const Home: React.FC<OpenAI> = (formData, filename, setFilename, onChange) => {
+const Home: React.FC<OpenAI> = (formData, onChange) => {
   // const CHARACTER_LIMIT: number = 128;
-  //   here is where you can change the front end suggested prompt limit
   // const isPromptValid = props.prompt.length < props.characterLimit;
-
   // const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
 
+  const [filename, setFilename] = useState(null);
   const [transcript, setTranscript] = useState('');
   const [summary, setSummary] = useState('');
   const [secondSummary, setSecondSummary] = useState('');
+  const [res, setRes] = useState(null);
   const [data, setData] = useState([]);
-  const [res, setRes] = useState([]);
+  const [display, setDisplay] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasResult, setHasResult] = useState(false);
 
-  // // Using useEffect for single rendering
-  // useEffect(() => {
-  //   if (res.length > 0) {
-  //     setHasResult(true);
-  //     setTranscript(res[0]);
-  //     setSummary(res[1]);
-  //     setSecondSummary(res[2]);
-  //   }
-  // }, []);
-
   const onSubmit = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    res: any,
-    filename: any
+    res: any
   ) => {
     // Select your input type file and store it in a variable
     const fileField = document.querySelector('input[type="file"]');
@@ -67,7 +56,8 @@ const Home: React.FC<OpenAI> = (formData, filename, setFilename, onChange) => {
 
     const formData = new FormData();
 
-    formData.append('audioUpload', '');
+    // not sure if we need the line right after this one
+    // formData.append('audioUpload', '');
     formData.append('audioUpload', fileField.files[0]);
 
     fetch('http://127.0.0.1:5000/whisper', {
@@ -80,7 +70,23 @@ const Home: React.FC<OpenAI> = (formData, filename, setFilename, onChange) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        return data;
+      })
+      .then((data) => {
+        const arr = Object.keys(data).map((key) => data[key]);
         onResult(data);
+        console.log(arr[0][0].filename);
+        console.log(arr[0][0].transcript);
+        console.log(arr[0][0].summary);
+        console.log(arr[0][0].secondSummary);
+
+        setFilename(arr[0][0].filename);
+        setTranscript(arr[0][0].transcript);
+        setSummary(arr[0][0].summary);
+        setSecondSummary(arr[0][0].secondSummary);
+
+        setDisplay(arr[0][0]);
+        console.log(display);
       })
       .then((result) => {
         console.log('Success:', result);
@@ -88,38 +94,36 @@ const Home: React.FC<OpenAI> = (formData, filename, setFilename, onChange) => {
       .catch((error) => {
         console.error('Error:', error);
       });
-    // // .then(onResult);
     return res;
   };
 
   // this takes the json data when the user clicks the button and sets the state
   // gives you the snippet and keywords as variables you can use
   const onResult = (data: any) => {
-    console.log(data);
-
-
-
-    setTranscript(data[0]);
-    setSummary(data[1]);
-    setSecondSummary(data[2]);
-
+    console.log('start of onResult');
     setIsLoading(false);
     setHasResult(true);
-    console.log('results are updated');
+    console.log('end of onResult');
   };
 
   const onReset = () => {
-    setHasResult(false);
+    setFilename(null);
+    setTranscript('');
+    setSummary('');
+    setSecondSummary('');
+    setRes(null);
+    setData([]);
+    setDisplay(null);
     setIsLoading(false);
+    setHasResult(false);
   };
 
   return (
     <div className={styles.container}>
-      <Header />
       <main className={styles.main}>
+        <Header />
         <Banner />
         <Form
-          // audiofile={audiofile}
           onSubmit={onSubmit}
           data={data}
           formData={formData}
@@ -130,12 +134,14 @@ const Home: React.FC<OpenAI> = (formData, filename, setFilename, onChange) => {
           action={onSubmit}
           res={res}
         />
+        {/* <Microphone /> */}
+        <Reset onReset={onReset} />
 
         {/* Three sections */}
         <div id='output-boxes' className={styles.grid}>
-          <Whisper />
-          <Gpt />
-          <Codex />
+          <Whisper transcript={transcript} />
+          <Gpt summary={summary} />
+          <Codex secondSummary={secondSummary} />
         </div>
       </main>
     </div>

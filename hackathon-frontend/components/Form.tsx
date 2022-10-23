@@ -11,60 +11,42 @@ interface FormProps {
   onChange: any;
   res: any;
   formData: any;
-  // audiofile: any;
 }
 
 const Form: React.FC<FormProps> = ({
   onSubmit,
-  // onChange,
-  action,
   data,
   res,
   formData,
-  // filename,
-  // audiofile,
+  filename,
 }) => {
-  // interface FormDataType {
-  //   audioUpload: file;
-  // }
-
-  const [filename, setFilename] = useState(null);
-
-  // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   event.preventDefault();
-  //   // setFilename(event.target.files[0]);
-  // };
-
   return (
     <div className='audio-container'>
-      <div className='audio-upload-container'>
+      <div>
         <form
+          className='flex flex-col flex-grow'
           onSubmit={onSubmit}
-          // onChange={onChange}
-          // action='http://127.0.0.1:5000/whisper'
           method='POST'
           encType='multipart/form-data'
         >
-          <label htmlFor='audio-upload'>
+          <label className='flex-1 m-auto' htmlFor='audio-upload'>
             Upload Audio File:
-            <br></br>
           </label>
           <input
+            className='flex-2 mx-4 my-2 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
             type='file'
             id='file'
             name='audioUpload'
             accept='audio/*'
-            // ref={audiofile}
-            // value={filename}
-            // onChange={onChange}
           />
-
-          {/* <br className='mt-2'></br> */}
-
-          <button type='submit'>Submit</button>
+          <button className='flex-3 m-auto mt-3 bg-gradient-to-r from-slate-400 to-blue-500 disabled:opacity-50 w-full p-2 rounded-md text-lg' type='submit'>
+            Submit
+          </button>
         </form>
+        {/* <div>
+          <p>{filename}</p>
+        </div> */}
       </div>
-      {/* <Microphone onSubmit={onSubmit} /> */}
     </div>
   );
 };

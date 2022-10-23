@@ -1,6 +1,11 @@
 import React from 'react';
+import { FC } from 'react';
 
-const Codex = ({}) => {
+interface CodexProps {
+  secondSummary: any;
+}
+
+const Codex: FC<CodexProps> = ({ secondSummary }) => {
   return (
     <div className='code-conversion'>
       <h3>Code Conversion</h3>
@@ -11,8 +16,7 @@ const Codex = ({}) => {
         <option value='go'>Go</option>
       </select>
       <div className='large-box'>
-        {/* <p>{secondSummary}</p> */}
-        <p id='code-converted'>{}</p>
+        <p id='code-converted'>{secondSummary}</p>
       </div>
     </div>
   );

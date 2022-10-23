@@ -76,6 +76,13 @@ main div {
   /* margin-left: 40px; */
 }
 
+.reset-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+
 button#recording {
   background-color: #efefef;
   color: black;

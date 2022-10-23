@@ -1,14 +1,21 @@
 import React from 'react';
+import { FC } from 'react';
 
-const Reset = ({}) => {
+interface ResetProps {
+  onReset: any;
+}
+
+const Reset: FC<ResetProps> = ({ onReset }) => {
   return (
-    <button
-      className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
-      // onClick={onReset}
-      // disabled={props.isLoading || !isPromptValid}
-    >
-      Record Live!
-    </button>
+    <div className='reset-container'>
+      <button
+        className='bg-gradient-to-r from-red-400 to-red-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
+        onClick={onReset}
+        // disabled={props.isLoading || !isPromptValid}
+      >
+        Reset Form
+      </button>
+    </div>
   );
 };
 

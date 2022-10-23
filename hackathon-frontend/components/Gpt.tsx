@@ -1,12 +1,16 @@
 import React from 'react';
+import { FC } from 'react';
 
-const Gpt = ({}) => {
+interface GptProps {
+  summary: any;
+}
+
+const Gpt: FC<GptProps> = ({ summary }) => {
   return (
     <div className='code-output'>
       <h3>Code Output</h3>
       <div className='large-box'>
-        {/* <p>{summary}</p> */}
-        <p id='key-code'></p>
+        <p id='key-code'>{summary}</p>
       </div>
     </div>
   );
