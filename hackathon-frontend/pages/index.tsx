@@ -8,6 +8,7 @@ import Microphone from '../components/Microphone';
 import Form from '../components/Form';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
+import axios from 'axios';
 
 interface OpenAI {
   onSubmit: any;
@@ -20,65 +21,91 @@ interface OpenAI {
   results: any;
   onChange: any;
   action: any;
+  formData: any;
+  setFilename: any;
   // ENDPOINT: string;
   // props: any;
+  // audiofile: any;
+  res: any;
 }
 
-const Home: React.FC<OpenAI> = (props) => {
+const Home: React.FC<OpenAI> = (formData, filename, setFilename, onChange) => {
   // const CHARACTER_LIMIT: number = 128;
   //   here is where you can change the front end suggested prompt limit
   // const isPromptValid = props.prompt.length < props.characterLimit;
 
   // const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasResult, setHasResult] = useState(false);
-  const [filename, setFilename] = useState('');
   const [transcript, setTranscript] = useState('');
   const [summary, setSummary] = useState('');
   const [secondSummary, setSecondSummary] = useState('');
-  const [data, setData] = useState('');
+  const [data, setData] = useState([]);
+  const [res, setRes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasResult, setHasResult] = useState(false);
 
   // // Using useEffect for single rendering
   // useEffect(() => {
-  //   console.log('submitting useEffect form');
-  //   setIsLoading(true);
-  //   fetch('http://127.0.0.1:5000/whisper', {
-  //     method: 'GET',
-  //     headers: { 'Content-Type': 'application/json' },
-  //   })
-  //     .then((res) => res.json())
-  //     .then(onResult)
+  //   if (res.length > 0) {
+  //     setHasResult(true);
+  //     setTranscript(res[0]);
+  //     setSummary(res[1]);
+  //     setSecondSummary(res[2]);
+  //   }
   // }, []);
 
-  const onSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    // event.preventDefault();
-    console.log('submitting onSubmit');
+  const onSubmit = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    res: any,
+    filename: any
+  ) => {
+    // Select your input type file and store it in a variable
+    const fileField = document.querySelector('input[type="file"]');
+
+    event.preventDefault();
     setIsLoading(true);
-    console.log('submitting setIsLoading');
+
+    const formData = new FormData();
+
+    formData.append('audioUpload', '');
+    formData.append('audioUpload', fileField.files[0]);
+
     fetch('http://127.0.0.1:5000/whisper', {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      // headers: {
+      //   'Content-Type': 'multipart/form-data',
+      // },
+      body: formData,
     })
       .then((res) => res.json())
-      .then(onResult);
+      .then((data) => {
+        console.log(data);
+        onResult(data);
+      })
+      .then((result) => {
+        console.log('Success:', result);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    // // .then(onResult);
+    return res;
   };
-
-  // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   event.preventDefault();
-  //   // setFilename(event.target.value);
-  // };
 
   // this takes the json data when the user clicks the button and sets the state
   // gives you the snippet and keywords as variables you can use
   const onResult = (data: any) => {
-    setSummary(data.summary);
-    setHasResult(true);
+    console.log(data);
+
+
+
+    setTranscript(data[0]);
+    setSummary(data[1]);
+    setSecondSummary(data[2]);
+
     setIsLoading(false);
+    setHasResult(true);
+    console.log('results are updated');
   };
 
   const onReset = () => {
@@ -86,37 +113,22 @@ const Home: React.FC<OpenAI> = (props) => {
     setIsLoading(false);
   };
 
-  // let displayedElement = null;
-
-  // if (hasResult) {
-  //   displayedElement = <Whisper results={results} />;
-  //   // keywords={keywords} throw this in there if you want to display the keywords for the user
-  // } else {
-  //   displayedElement = (
-  //     <Form
-  //       onSubmit={onSubmit}
-  //       isLoading={isLoading}
-  //       setFilename={setFilename}
-  //       filename={filename}
-  //       onChange={onChange}
-  //       // characterLimit={CHARACTER_LIMIT}
-  //     />
-  //   );
-  // }
-
   return (
     <div className={styles.container}>
       <Header />
       <main className={styles.main}>
         <Banner />
         <Form
+          // audiofile={audiofile}
           onSubmit={onSubmit}
           data={data}
+          formData={formData}
           isLoading
           filename={filename}
-          // onChange={onChange}
+          onChange={onChange}
           setFilename={setFilename}
           action={onSubmit}
+          res={res}
         />
 
         {/* Three sections */}

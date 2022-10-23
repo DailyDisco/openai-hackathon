@@ -7,11 +7,12 @@ import openai
 import os
 import codex
 from dotenv import load_dotenv
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
+# from mangum import Mangum
 
 app = Flask(__name__)
+# handler = Mangum(app) # this wraps the api app in a handler function for AWS Lambda
 CORS(app, supports_credentials=True)
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 load_dotenv()
@@ -31,12 +32,11 @@ model = whisper.load_model("base", device=DEVICE)
 #     return "Whisper Hello World!"
 
 
-@app.route('/whisper', methods=['POST', 'GET'])
-@cross_origin()
+@app.route('/whisper', methods=['POST', 'GET', 'PUT'])
 def handler():
-    # if not request.files:
-    #     # If the user didn't submit any files, return a 400 (Bad Request) error.
-    #     abort(400)
+    if not request.files:
+        # If the user didn't submit any files, return a 400 (Bad Request) error.
+        abort(400)
 
     # For each file, let's store the results in a list of dictionaries.
     results = []
