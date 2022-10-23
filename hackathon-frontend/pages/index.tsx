@@ -7,10 +7,9 @@ import Codex from '../components/Codex';
 import Microphone from '../components/Microphone';
 import Form from '../components/Form';
 import Header from '../components/Header';
+import Banner from '../components/Banner';
 
 interface OpenAI {
-  prompt: string;
-  setPrompt: any;
   onSubmit: any;
   isLoading: boolean;
   characterLimit: number;
@@ -19,102 +18,110 @@ interface OpenAI {
   summary: any;
   secondSummary: any;
   results: any;
-  props: any;
+  onChange: any;
+  action: any;
+  // ENDPOINT: string;
+  // props: any;
 }
 
 const Home: React.FC<OpenAI> = (props) => {
-  const CHARACTER_LIMIT: number = 128;
+  // const CHARACTER_LIMIT: number = 128;
+  //   here is where you can change the front end suggested prompt limit
+  // const isPromptValid = props.prompt.length < props.characterLimit;
 
-  const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
-
-  const [prompt, setPrompt] = React.useState('');
+  // const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasResult, setHasResult] = useState(false);
-  // const [filename, setFilename] = useState('');
-  // const [transcript, setTranscript] = useState('');
-  // const [summary, setSummary] = useState('');
-  // const [secondSummary, setSecondSummary] = useState('');
+  const [filename, setFilename] = useState('');
+  const [transcript, setTranscript] = useState('');
+  const [summary, setSummary] = useState('');
+  const [secondSummary, setSecondSummary] = useState('');
+  const [data, setData] = useState('');
 
-  // useState for setting a javascript
-  // object for storing and using data
-  const [data, setData] = useState({
-    filename: '',
-    transcript: '',
-    summary: '',
-    secondSummary: '',
-  });
-
-    // // Using useEffect for single rendering
+  // // Using useEffect for single rendering
   // useEffect(() => {
-  //   // Using fetch to fetch the api from
-  //   // flask server it will be redirected to proxy
-  //   );
+  //   console.log('submitting useEffect form');
+  //   setIsLoading(true);
+  //   fetch('http://127.0.0.1:5000/whisper', {
+  //     method: 'GET',
+  //     headers: { 'Content-Type': 'application/json' },
+  //   })
+  //     .then((res) => res.json())
+  //     .then(onResult)
   // }, []);
 
-  const onSubmit = async () => {
-    console.log('submitting: ' + prompt);
+  const onSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // event.preventDefault();
+    console.log('submitting onSubmit');
     setIsLoading(true);
-    fetch(`${ENDPOINT}`)
+    console.log('submitting setIsLoading');
+    fetch('http://127.0.0.1:5000/whisper', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
       .then((res) => res.json())
-      .then((data) => {
-        // Setting a data from api
-        setData({
-          filename: data.Filename,
-          transcript: data.Transcript,
-          summary: data.Summary,
-          secondSummary: data.SecondSummary,
-        });
-      });
-    console.log(data);
+      .then(onResult);
   };
-  
+
+  // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   event.preventDefault();
+  //   // setFilename(event.target.value);
+  // };
 
   // this takes the json data when the user clicks the button and sets the state
   // gives you the snippet and keywords as variables you can use
   const onResult = (data: any) => {
-    // setFilename(data.results.filename);
-    // setTranscript(data.results[1]);
-    // setSummary(data.results[2]);
-    // setSecondSummary(data.results[3]);
-    // setKeywords(data.keywords);
+    setSummary(data.summary);
     setHasResult(true);
     setIsLoading(false);
   };
 
   const onReset = () => {
-    setPrompt(''); // reset the prompt
     setHasResult(false);
     setIsLoading(false);
   };
 
-  let displayedElement = null;
+  // let displayedElement = null;
 
-  // here is where you can change the front end suggested prompt limit
-  // const isPromptValid = props.prompt.length < props.characterLimit;
-
-  // const updatePromptValue = (text: string) => {
-  //   if (text.length <= props.characterLimit) {
-  //     props.setPrompt(text);
-  //   }
-  // };
+  // if (hasResult) {
+  //   displayedElement = <Whisper results={results} />;
+  //   // keywords={keywords} throw this in there if you want to display the keywords for the user
+  // } else {
+  //   displayedElement = (
+  //     <Form
+  //       onSubmit={onSubmit}
+  //       isLoading={isLoading}
+  //       setFilename={setFilename}
+  //       filename={filename}
+  //       onChange={onChange}
+  //       // characterLimit={CHARACTER_LIMIT}
+  //     />
+  //   );
+  // }
 
   return (
     <div className={styles.container}>
       <Header />
-
       <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to our Project!</h1>
-
-        <h2>OpenAI Whisper Hackathon</h2>
-
-        <div className='line'></div>
-
-        <Form onSubmit={onSubmit} />
+        <Banner />
+        <Form
+          onSubmit={onSubmit}
+          data={data}
+          isLoading
+          filename={filename}
+          // onChange={onChange}
+          setFilename={setFilename}
+          action={onSubmit}
+        />
 
         {/* Three sections */}
         <div id='output-boxes' className={styles.grid}>
-          <Whisper transcript={data.transcript} />
+          <Whisper />
           <Gpt />
           <Codex />
         </div>

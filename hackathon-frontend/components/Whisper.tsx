@@ -1,16 +1,12 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-interface WhisperProps {
-  transcript: any;
-}
+interface WhisperProps {}
 
-const Whisper: FC<WhisperProps> = ({ transcript }) => {
+const Whisper: FC<WhisperProps> = ({}) => {
   return (
     <div className='text-output'>
       <h3>Text Output</h3>
       <div className='large-box'>
-        {/* <p>{props.filename}</p> */}
-        <p>{transcript}</p>
         <p id='key-text'></p>
       </div>
     </div>
