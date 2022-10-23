@@ -29,7 +29,7 @@ const Form: React.FC<FormProps> = ({
           method='POST'
           encType='multipart/form-data'
         >
-          <label className='flex-1 m-auto' htmlFor='audio-upload'>
+          <label className='flex-1 m-auto mb-3' htmlFor='audio-upload'>
             Upload Audio File:
           </label>
           <input
@@ -39,7 +39,7 @@ const Form: React.FC<FormProps> = ({
             name='audioUpload'
             accept='audio/*'
           />
-          <button className='flex-3 m-auto mt-3 bg-gradient-to-r from-slate-400 to-blue-500 disabled:opacity-50 w-full p-2 rounded-md text-lg' type='submit'>
+          <button className='flex-3 m-auto mt-5 bg-gradient-to-r from-slate-400 to-blue-500 disabled:opacity-50 w-full p-2 rounded-md text-lg' type='submit'>
             Submit
           </button>
         </form>

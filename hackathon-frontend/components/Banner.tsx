@@ -8,7 +8,7 @@ const Banner = () => {
 
       <h2 className='flex justify-center'>OpenAI Whisper Hackathon</h2>
 
-      <div className='mx-16 line'></div>
+      <div className='mx-auto line'></div>
     </div>
   );
 };
