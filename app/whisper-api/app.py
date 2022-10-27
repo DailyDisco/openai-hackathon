@@ -7,20 +7,15 @@ import openai
 import os
 import codex
 from dotenv import load_dotenv
-# from mangum import Mangum
 from flask_cors import CORS
+# from mangum import Mangum
 
 app = Flask(__name__)
-# handler = Mangum(app) # this wraps the api app in a handler function
+# handler = Mangum(app) # this wraps the api app in a handler function for AWS Lambda
 CORS(app, supports_credentials=True)
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+
+load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -31,15 +26,13 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # Load the Whisper model:
 model = whisper.load_model("base", device=DEVICE)
 
-app = Flask(__name__)
+## Example
+# @app.route("/")
+# def hello():
+#     return "Whisper Hello World!"
 
 
-@app.route("/")
-def hello():
-    return "Whisper Hello World!"
-
-
-@app.route('/whisper', methods=['POST'])
+@app.route('/whisper', methods=['POST', 'GET', 'PUT'])
 def handler():
     if not request.files:
         # If the user didn't submit any files, return a 400 (Bad Request) error.
@@ -59,7 +52,7 @@ def handler():
         # Let's get the transcript of the temporary file.
         result = model.transcribe(temp.name)
         text = result['text']
-        # Let's get the summary of the soundfile
+        # Let's get the summary of the sound file
         summary = gpt3.gpt3complete(text)
         
         # Let's make a summary of the first summary

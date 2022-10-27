@@ -1,153 +1,149 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import React, { useState } from 'react';
-import { resourceLimits } from 'worker_threads';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import React, { useState, useEffect } from 'react';
+import Whisper from '../components/Whisper';
+import Gpt from '../components/Gpt';
+import Codex from '../components/Codex';
+import Microphone from '../components/Microphone';
+import Form from '../components/Form';
+import Header from '../components/Header';
+import Banner from '../components/Banner';
+import Reset from '../components/Reset';
 
 interface OpenAI {
-  prompt: string;
-  setPrompt: any;
   onSubmit: any;
   isLoading: boolean;
   characterLimit: number;
-  // props: any;
+  filename: any;
+  transcript: any;
+  summary: any;
+  secondSummary: any;
+  results: any;
+  onChange: any;
+  action: any;
+  formData: any;
+  setFilename: any;
+  setSummary: any;
+  res: any;
+  arr: any;
+  // ENDPOINT: string;
 }
 
-const Home: React.FC<OpenAI> = (props) => {
-  const CHARACTER_LIMIT: number = 128;
-  
-  const ENDPOINT: string =
-    'http://127.0.0.1:5001/whisper';
+const Home: React.FC<OpenAI> = (formData, onChange) => {
+  // const CHARACTER_LIMIT: number = 128;
+  // const isPromptValid = props.prompt.length < props.characterLimit;
+  // const ENDPOINT: string = 'http://127.0.0.1:5000/whisper';
 
-  const [prompt, setPrompt] = React.useState('');
-  const [snippet, setSnippet] = React.useState('');
-
-  const [hasResult, setHasResult] = useState(false);
+  const [filename, setFilename] = useState(null);
+  const [transcript, setTranscript] = useState('');
+  const [summary, setSummary] = useState('');
+  const [secondSummary, setSecondSummary] = useState('');
+  const [res, setRes] = useState(null);
+  const [data, setData] = useState([]);
+  const [display, setDisplay] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasResult, setHasResult] = useState(false);
 
-  const onSubmit = async () => {
-    console.log('submitting: ');
-    // callApi();
+  const onSubmit = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    res: any
+  ) => {
+    // Select your input type file and store it in a variable
+    const fileField = document.querySelector('input[type="file"]');
+
+    event.preventDefault();
     setIsLoading(true);
-    const url = `${ENDPOINT}`
-    const reqOptions = {
+
+    const formData = new FormData();
+
+    // not sure if we need the line right after this one
+    // formData.append('audioUpload', '');
+    formData.append('audioUpload', fileField.files[0]);
+
+    fetch('http://127.0.0.1:5000/whisper', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    }
-    const res = await fetch(url, reqOptions)
-      .then(response => console.log(response))
-    // const res = await fetch(`${ENDPOINT}`) //?prompt=${prompt}
-    //   .then((res) => res.json())
-    //   .then(onResult);
-      console.log(res)
+      // headers: {
+      //   'Content-Type': 'multipart/form-data',
+      // },
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        return data;
+      })
+      .then((data) => {
+        const arr = Object.keys(data).map((key) => data[key]);
+        onResult(data);
+        console.log(arr[0][0].filename);
+        console.log(arr[0][0].transcript);
+        console.log(arr[0][0].summary);
+        console.log(arr[0][0].secondSummary);
+
+        setFilename(arr[0][0].filename);
+        setTranscript(arr[0][0].transcript);
+        setSummary(arr[0][0].summary);
+        setSecondSummary(arr[0][0].secondSummary);
+
+        setDisplay(arr[0][0]);
+        console.log(display);
+      })
+      .then((result) => {
+        console.log('Success:', result);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    return res;
   };
 
   // this takes the json data when the user clicks the button and sets the state
   // gives you the snippet and keywords as variables you can use
   const onResult = (data: any) => {
-    setSnippet(data.snippet);
-    // setKeywords(data.keywords);
-    setHasResult(true);
+    console.log('start of onResult');
     setIsLoading(false);
+    setHasResult(true);
+    console.log('end of onResult');
   };
 
   const onReset = () => {
-    setPrompt(''); // reset the prompt
-    setHasResult(false);
+    setFilename(null);
+    setTranscript('');
+    setSummary('');
+    setSecondSummary('');
+    setRes(null);
+    setData([]);
+    setDisplay(null);
     setIsLoading(false);
+    setHasResult(false);
   };
-
-  let displayedElement = null;
-
-  // here is where you can change the front end suggested prompt limit
-  // const isPromptValid = props.prompt.length < props.characterLimit;
-  const updatePromptValue = (text: string) => {
-    if (text.length <= props.characterLimit) {
-      props.setPrompt(text);
-    }
-  };
-
-  let statusColor = 'text-slate-500';
-  let statusText = null;
-  // if (!isPromptValid) {
-  //   statusColor = 'text-red-400';
-  //   statusText = `Input must be less than ${props.characterLimit} characters.`;
-  // }
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <meta name='description' content='Generated by create next app' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-
       <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to our Project!</h1>
-
-        <h2>OpenAI Whisper Hackathon</h2>
-
-        <div className='line'></div>
-
-        <div className="audio-container">
-          <div className="audio-upload-container">
-            <form onSubmit={onSubmit} name="recording" encType="multipart/form-data">
-              <label htmlFor="audio-upload">Upload Audio File</label>
-              <input type="file" name="audio-upload" id="audio-upload" accept="audio/*"/>
-              <br className='mt-2'></br>
-              <div>
-              {/* disable the button if the prompt is over the limit */}
-              {/* <button
-              className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
-              onClick={props.onSubmit}
-              // disabled={props.isLoading || !isPromptValid}
-              >
-              Submit
-              </button> */}
-              <input type="submit" value="Submit" />
-              </div>
-            </form>
-          </div>
-          <div className="live-recording">
-          <button
-              className='bg-gradient-to-r from-red-400 to-pink-500 disabled:opacity-50 w-full p-2 rounded-md text-lg'
-              onClick={props.onSubmit}
-              // disabled={props.isLoading || !isPromptValid}
-              >Record Live!
-            </button>
-          </div>
-        </div>
+        <Header />
+        <Banner />
+        <Form
+          onSubmit={onSubmit}
+          data={data}
+          formData={formData}
+          isLoading
+          filename={filename}
+          onChange={onChange}
+          setFilename={setFilename}
+          action={onSubmit}
+          res={res}
+        />
+        {/* <Microphone /> */}
+        <Reset onReset={onReset} />
 
         {/* Three sections */}
         <div id='output-boxes' className={styles.grid}>
-          <div className='text-output'>
-            <h3>Text Output</h3>
-            <div className="large-box">
-              <p id="key-text"></p>
-            </div>
-          </div>
-          <div className='code-output'>
-            <h3>Code Output</h3>
-            <div className="large-box">
-              <p id="key-code"></p>
-            </div>
-          </div>
-          <div className='code-conversion'>
-            <h3>Code Conversion</h3>
-            
-            <select name="language-selector" id="language-selector">
-              <option value="javascript">JavaScript</option>
-              <option value="ruby">Ruby</option>
-              <option value="go">Go</option>
-            </select>
-            <div className="large-box">
-              <p id="code-converted">`{}`</p>
-            </div>
-          </div>
+          <Whisper transcript={transcript} />
+          <Gpt summary={summary} />
+          <Codex secondSummary={secondSummary} />
         </div>
       </main>
-
-      <footer className={styles.footer}></footer>
     </div>
   );
 };

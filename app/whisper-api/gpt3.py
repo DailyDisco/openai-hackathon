@@ -17,7 +17,7 @@ def gpt3complete(speech):
 
     Platformresponse = openai.Completion.create(
         engine="text-davinci-002",
-        prompt="Write a short summary of this text: {}".format(speech),
+        prompt="Create a Python script from the idea of this text: {}".format(speech),
         temperature=0.7,
         max_tokens=1500,
         top_p=1,
