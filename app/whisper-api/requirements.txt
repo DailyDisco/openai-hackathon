@@ -1,5 +1,9 @@
 flask
 openai
 python-dotenv
+<<<<<<< HEAD
+flask-cors
+=======
 flask_cors
 mangum
+>>>>>>> upstream/main
