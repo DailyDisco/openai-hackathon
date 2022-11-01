@@ -1,5 +1,12 @@
 {
     "cSpell.words": [
-        "audiofile"
+        "allbuttons",
+        "audiofile",
+        "audiopreview",
+        "generatebutton",
+        "generatebuttonroot",
+        "recordbutton",
+        "stopbutton",
+        "whispercontainer"
     ]
 }

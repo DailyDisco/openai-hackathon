@@ -8,7 +8,8 @@ import os
 import codex
 from dotenv import load_dotenv
 from flask_cors import CORS
-# from mangum import Mangum
+# from whisperMic import whisperResults, main #, generate_keywords
+# # from mangum import Mangum
 
 app = Flask(__name__)
 # handler = Mangum(app) # this wraps the api app in a handler function for AWS Lambda
@@ -30,6 +31,40 @@ model = whisper.load_model("base", device=DEVICE)
 # @app.route("/")
 # def hello():
 #     return "Whisper Hello World!"
+
+# @app.route('/whisper_snippet', methods=['GET', 'POST'])
+# def generate_whisper_api(result):
+#     voiceSnippet = whisperResults(result)
+#     return {'voiceSnippet': voiceSnippet}
+
+@app.route('/whisper_mic', methods=['POST', 'GET'])
+def generate_whisper_mp3():
+    # print('Hello world!', file=sys.stderr)
+    # if not request.files:
+    #     # If the user didn't submit any files, return a 400 (Bad Request) error.
+    #     abort(400)
+
+    # For each file, let's store the results in a list of dictionaries.
+    results = []
+
+    # Loop over every file that the user submitted.
+    for filename, handle in request.files.items():
+        # Create a temporary file.
+        # The location of the temporary file is available in `temp.name`.
+        temp = NamedTemporaryFile()
+        # Write the user's uploaded file to the temporary file.
+        # The file will get deleted when it drops out of scope.
+        handle.save(temp)
+        # Let's get the transcript of the temporary file.
+        result = model.transcribe(temp.name)
+        # Now we can store the result object for this file.
+        results.append({
+            'filename': filename,
+            'transcript': result['text'],
+        })
+
+    # This will be automatically converted to JSON.
+    return {'results': results}
 
 
 @app.route('/whisper', methods=['POST', 'GET', 'PUT'])
