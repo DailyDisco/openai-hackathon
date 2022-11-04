@@ -57,10 +57,19 @@ def generate_whisper_mp3():
         handle.save(temp)
         # Let's get the transcript of the temporary file.
         result = model.transcribe(temp.name)
+        
+        text = result['text']
+        # Let's get the summary of the sound file
+        summary = gpt3.gpt3complete(text)
+        
+        # Let's make a summary of the first summary
+        secondSummary = codex.codexComplete(summary)
         # Now we can store the result object for this file.
         results.append({
             'filename': filename,
             'transcript': result['text'],
+            'summary': summary.strip(),
+            'secondSummary': secondSummary.strip(),
         })
 
     # This will be automatically converted to JSON.
